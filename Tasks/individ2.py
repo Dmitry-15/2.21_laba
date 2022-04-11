@@ -24,72 +24,6 @@ def connect():
     return conn
 
 
-def display(people: t.List[t.Dict[str, t.Any]]) -> None:
-    """
-    Отобразить список людей
-    """
-    if people:
-        line = '+-{}-+-{}-+-{}-+-{}-+'.format(
-            '-' * 4,
-            '-' * 30,
-            '-' * 20,
-            '-' * 20
-        )
-        print(line)
-        print(
-            '| {:^4} | {:^30} | {:^20} | {:^20} |'.format(
-                "No",
-                "ФИО",
-                "Знак зодиака",
-                "Дата рождения"
-            )
-        )
-        print(line)
-        for idx, human in enumerate(people, 1):
-            print(
-                '| {:>4} | {:<30} | {:<20} | {:>20} |'.format(
-                    idx,
-                    human.get('name', ''),
-                    human.get('zodiac', ''),
-                    human.get('year', 0)
-
-                )
-            )
-            print(line)
-        else:
-            print("Список пуст")
-
-
-def create_db() -> None:
-    """
-    Создать базу данных.
-    """
-    cursor = connect().cursor()
-    # Создать таблицу людей с ФИО
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS human (
-        human_id serial,
-        PRIMARY KEY(human_id),
-        name TEXT NOT NULL
-        )
-        """
-    )
-    # Создать таблицу с полной информацией о людях
-    cursor.execute(
-        """
-        CREATE TABLE IF NOT EXISTS people (
-        human_id serial,
-        PRIMARY KEY(human_id),
-        zodiac INTEGER NOT NULL,
-        year TEXT NOT NULL,
-        FOREIGN KEY(human_id) REFERENCES human(human_id)
-        ON DELETE CASCADE ON UPDATE CASCADE
-        )
-        """
-    )
-
-
 def add_human(
         name: str,
         zodiac: str,
@@ -177,6 +111,72 @@ def select_human(name) -> t.List[t.Dict[str, t.Any]]:
         }
         for row in rows
     ]
+
+
+def display(people: t.List[t.Dict[str, t.Any]]) -> None:
+    """
+    Отобразить список людей
+    """
+    if people:
+        line = '+-{}-+-{}-+-{}-+-{}-+'.format(
+            '-' * 4,
+            '-' * 30,
+            '-' * 20,
+            '-' * 20
+        )
+        print(line)
+        print(
+            '| {:^4} | {:^30} | {:^20} | {:^20} |'.format(
+                "No",
+                "ФИО",
+                "Знак зодиака",
+                "Дата рождения"
+            )
+        )
+        print(line)
+        for idx, human in enumerate(people, 1):
+            print(
+                '| {:>4} | {:<30} | {:<20} | {:>20} |'.format(
+                    idx,
+                    human.get('name', ''),
+                    human.get('zodiac', ''),
+                    human.get('year', 0)
+
+                )
+            )
+            print(line)
+        else:
+            print("Список пуст")
+
+
+def create_db() -> None:
+    """
+    Создать базу данных.
+    """
+    cursor = connect().cursor()
+    # Создать таблицу людей с ФИО
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS human (
+        human_id serial,
+        PRIMARY KEY(human_id),
+        name TEXT NOT NULL
+        )
+        """
+    )
+    # Создать таблицу с полной информацией о людях
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS people (
+        human_id serial,
+        PRIMARY KEY(human_id),
+        zodiac INTEGER NOT NULL,
+        year TEXT NOT NULL,
+        FOREIGN KEY(human_id) REFERENCES human(human_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+        )
+        """
+    )
 
 
 def main(command_line=None):
